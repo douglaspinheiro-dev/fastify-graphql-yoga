@@ -12,8 +12,7 @@ class Usuario extends Model {
   }
 
   async gravar (root, { usuario }, { session, dataSources }, info) {
-    usuario.senha = await bcrypt.hash('12345', 10)
-
+    usuario.senha = await bcrypt.hash(usuario.senha, 10)
     return dataSources.usuarioDao.salva(usuario)
       .then(id => {
         usuario.usuario = id
@@ -64,4 +63,10 @@ class Usuario extends Model {
     return dataSources.usuarioDao.buscaLogin(login)
   }
 }
-module.exports = new Usuario()
+module.exports = new Usuario({
+  modulo: 'usuario',
+  tabela: 'usuarios',
+  model: require('./usuario'),
+  campoUnico: 'email'
+
+})
