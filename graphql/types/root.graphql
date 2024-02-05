@@ -1,0 +1,32 @@
+input BuscaInput {
+  busca: String
+  inicio: Int!
+  fim: Int!
+  filtroCampo: String
+  filtroValor: String
+  filtro: String
+  inativos: Boolean
+}
+
+enum AlignEnum {
+  left
+  right
+  center
+}
+
+input ColTableInput {
+  name: String
+  required: Boolean
+  label: String
+  align: AlignEnum
+  field: String
+  sortable: Boolean
+}
+
+input PaginacaoInput {
+  rowsNumber: Int
+  page: Int
+  rowsPerPage: Int
+  sortBy: String
+  descending: Boolean
+}

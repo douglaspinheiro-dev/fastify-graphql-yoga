@@ -1,0 +1,48 @@
+type Usuario {
+  usuario: Int!
+  nome: String
+  telegram: String
+  email: String
+  editavel: Int
+  deleted_at: String
+  updated_at: String
+
+}
+
+input UsuarioInput {
+  usuario: Int
+  nome: String
+  telegram: String
+  email: String
+}
+
+
+type ListaDeUsuarios {
+  fim: Boolean!
+  registros: [Usuario!]
+}
+
+type Mutation {
+  usuarioAlterarSenha(senha: String!): Boolean!
+  usuarioAlterarSenhaOutroUsuario(usuario: Int!, senha: String!): Boolean!
+
+  usuarioGravar(
+    usuario: UsuarioInput!
+  ): Usuario!
+  usuarioAlterar(
+    usuario: UsuarioInput!
+  ): Boolean!
+  usuarioExcluir(id: Int): Boolean!
+  usuarioReativar(id: Int): Boolean!
+
+}
+
+type Query {
+  # usuarios: [Usuario!]!
+  # usuario(id: ID!): Usuario!
+  usuarioProcurar(
+    busca: BuscaInput
+  ): ListaDeUsuarios!
+
+  usuarioSelecionar(usuario: Int!): Usuario
+}
