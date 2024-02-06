@@ -1,56 +1,54 @@
 const tools = require('../tools')
+const dataSource = require('./dataSource')
+
 module.exports = class Model {
   constructor ({
-    modulo,
-    dao
+    modulo
   }) {
-    this.tools = tools
     this.modulo = modulo
-    this.dao = dao
+    this.dataSource = dataSource
   }
 
-  listar (root, params, { dataSources, session, modulo }, info) {
-    return dataSources[this.dao].lista({ modulo })
+  listar ({ modulo }) {
+    return this.dataSource[this.modulo].listar({ modulo })
   }
 
-  procurar (root, { busca }, { dataSources, session, modulo }, info) {
-    return dataSources[this.dao].procura({
-      limit: busca.fim,
-      page: busca.inicio,
-      busca: busca.busca,
-      filtro: busca.filtro,
-      modulo
-    }).then(resultado => this.tools.formataPaginacao(resultado, busca.fim))
-  }
-
-  selecionar (root, params, context, info) {
-    const id = root ? root[this.modulo] : params[this.modulo]
-    return context.dataSources[this.dao].seleciona({
-      id
+  async procurar ({ limit, page, busca, filtro }) {
+    const resultado = await this.dataSource[this.modulo].procurar({
+      limit,
+      page,
+      busca,
+      filtro,
+      modulo: this.modulo
     })
+    return tools.formataPaginacao(resultado, busca.fim)
   }
 
-  gravar (root, params, { dataSources }, info) {
-    const registro = params[this.modulo]
-
-    return dataSources[this.dao].salva(registro)
-      .then(id => {
-        registro[this.modulo] = id
-        return registro
-      })
+  selecionar ({ id }) {
+    return this.dataSource[this.modulo].selecionar({ id })
   }
 
-  alterar (root, params, { dataSources }, info) {
-    const registro = params[this.modulo]
-
-    return dataSources[this.dao]
-      .altera(registro)
-      .then(() => true)
+  async gravar ({ registro }) {
+    const id = await this.dataSource[this.modulo].salvar(registro)
+    registro[this.modulo] = id
+    return registro
   }
 
-  excluir (root, { id }, { dataSources }, info) {
-    return dataSources[this.dao].apaga({
-      id
-    }).then(() => true)
+  async alterar ({ registro }) {
+    await this.dataSource[this.modulo].alterar(registro)
+    return true
+  }
+
+  async excluir ({ id }) {
+    await this.dataSource[this.modulo].apagar({ id })
+    return true
+  }
+
+  async reativar ({ id, usuarioLogado }) {
+    await this.dataSource[this.modulo].reativar({
+      id,
+      usuarioLogado
+    })
+    return true
   }
 }

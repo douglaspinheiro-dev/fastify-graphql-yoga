@@ -1,5 +1,6 @@
-class DataSource {
-  constructor ({ knex, tabela, campoPrimario, camposBusca, orderBy }) {
+const knex = require('../database/knex')
+class Dao {
+  constructor ({ tabela, campoPrimario, camposBusca, orderBy }) {
     this.tabela = tabela
     this.campoPrimario = campoPrimario
     this.camposBusca = camposBusca
@@ -7,20 +8,20 @@ class DataSource {
     this.db = knex
   }
 
-  async salva (dados) {
+  async salvar (dados) {
     const registro = await this.db(this.tabela)
       .insert(dados)
     return registro[0]
   }
 
-  async altera (registro) {
+  async alterar (registro) {
     await this.db(this.tabela)
       .where({ [this.campoPrimario]: registro[this.campoPrimario] })
       .update(registro)
     return true
   }
 
-  async seleciona ({ id, modulo }) {
+  async selecionar ({ id, modulo }) {
     const registros = await this.db(this.tabela)
       .select(
         '*'
@@ -34,7 +35,7 @@ class DataSource {
     return registros[0]
   }
 
-  async busca (obj) {
+  async buscar (obj) {
     const registros = await this.db(this.tabela)
       .select(
         '*'
@@ -44,7 +45,7 @@ class DataSource {
     return registros[0]
   }
 
-  async procura ({ limit, page, busca, modulo, filtro }) {
+  async procurar ({ limit, page, busca, modulo, filtro }) {
     const self = this
     const registros = await this.db
       .select('*')
@@ -66,11 +67,10 @@ class DataSource {
       .orderBy(this.orderBy)
       .limit(limit)
       .offset(page)
-    console.log({ registros })
     return registros
   }
 
-  async lista ({ modulo }) {
+  async listar ({ modulo }) {
     const registros = await this.db(this.tabela)
       .select('*')
       .whereNull('deleted_at')
@@ -82,7 +82,7 @@ class DataSource {
     return registros
   }
 
-  async apaga ({ usuarioLogado, id }) {
+  async apagar ({ usuarioLogado, id }) {
     await this.db(this.tabela)
       .where({ [this.campoPrimario]: id })
       .update({
@@ -91,5 +91,14 @@ class DataSource {
       })
     return true
   }
+
+  async reativar ({ id }) {
+    await this.db(this.tabela)
+      .where({ [this.campoPrimario]: id })
+      .update({
+        deleted_at: null
+      })
+    return true
+  }
 }
-module.exports = DataSource
+module.exports = Dao

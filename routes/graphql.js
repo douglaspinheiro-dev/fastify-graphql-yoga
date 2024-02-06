@@ -12,7 +12,6 @@ const { useResponseCache } = require('@graphql-yoga/plugin-response-cache')
 const {
 
   schema,
-  dataSources,
   getSession
 
 } = require('../graphql/config')
@@ -20,8 +19,7 @@ const {
 module.exports = async function (app, opts) {
   const yoga = createYoga({
     context: context => ({ // Context factory gets called for every request
-      session: getSession(context),
-      dataSources
+      session: getSession(context)
     }),
     graphiql: true,
 

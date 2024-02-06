@@ -1,17 +1,19 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const { GraphQLError } = require('graphql')
+
+const dataSource = require('../dataSource')
 class Auth {
-  async signup (parent, args, { dataSources }, info) {
+  async signup (parent, args, context, info) {
     // confere se ja existe usuario com este email
-    const existeEmail = await dataSources.usuarioDao.existeEmail(args.email)
+    const existeEmail = await dataSource.usuario.existeEmail(args.email)
     console.log('existeEmail', existeEmail)
     if (existeEmail) throw new GraphQLError('Email já existe')
 
     // 1
     const senha = await bcrypt.hash(args.senha, 10)
     // 2
-    const id = await dataSources.usuarioDao.salva({ ...args, senha })
+    const id = await dataSource.usuario.salva({ ...args, senha })
     // 3
     const usuario = {
       ...args, usuario: id
@@ -26,7 +28,7 @@ class Auth {
 
   async login (parent, args, context, info) {
     // 1
-    const usuario = await context.dataSources.usuarioDao.busca({ email: args.email })
+    const usuario = await dataSource.usuario.buscar({ email: args.email })
     if (!usuario) {
       throw new GraphQLError('Nenhum usuário encontrado')
     }

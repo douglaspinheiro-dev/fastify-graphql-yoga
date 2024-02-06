@@ -1,23 +1,8 @@
-class UsuarioDao {
-  constructor (knex) {
-    this.db = knex
-    this.tabela = 'usuarios'
-    this.campoPrimario = 'usuario'
-    this.camposBusca = ['nome', 'telegram', 'email']
-    this.orderBy = 'nome'
-    this.Resposta = {
-      mensagem: ''
-    }
-  }
+const Dao = require('../dao')
 
-  async reativa ({ id }) {
-    await this.db(this.tabela)
-      .where({ usuario: id })
-      .update({
-        deleted_at: null
-      })
-    return true
-  }
-}
-
-module.exports = new UsuarioDao()
+module.exports = new Dao({
+  tabela: 'usuarios',
+  campoPrimario: 'usuario',
+  camposBusca: ['nome', 'telegram', 'email'],
+  orderBy: 'nome'
+})

@@ -4,6 +4,6 @@ type AuthPayload {
 }
 
 type Mutation {
-  signup(email: String!, senha: String!, nome: String!): AuthPayload
+  # signup(email: String!, senha: String!, nome: String!): AuthPayload
   login(email: String!, senha: String!): AuthPayload
 }

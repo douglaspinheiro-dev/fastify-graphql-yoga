@@ -1,5 +1,4 @@
 const { makeExecutableSchema } = require('@graphql-tools/schema')
-const dataSources = require('./dataSources/sql')
 const typeDefs = require('./typeDefs.js')
 const resolvers = require('./resolvers.js')
 const permissions = require('./shield/permissions.js')
@@ -26,7 +25,6 @@ function getSession (context) {
 module.exports = {
 
   schema,
-  dataSources,
   getSession
 
 }
