@@ -21,7 +21,7 @@ module.exports = class Model {
       filtro,
       modulo: this.modulo
     })
-    return tools.formataPaginacao(resultado, busca.fim)
+    return tools.formataPaginacao(resultado, limit)
   }
 
   selecionar ({ id }) {
